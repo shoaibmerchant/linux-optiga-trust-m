@@ -165,6 +165,10 @@ install:
 	@mkdir -p ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
 	@cp $(BINDIR)/$(PROVIDER) ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
 
+	@echo "Copying trustm binaries from $(BINDIR) to ${DESTDIR}${PREFIX}/usr/bin"
+	@mkdir -p ${DESTDIR}${PREFIX}/usr/bin
+	@cp $(BINDIR)/!(*.so) ${DESTDIR}${PREFIX}/usr/bin
+
 clean :
 	@echo "Removing *.o from $(LIBDIR)" 
 	@rm -rf $(LIBOBJ)
