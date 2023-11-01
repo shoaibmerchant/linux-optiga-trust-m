@@ -124,10 +124,8 @@ ifdef PROVDIR
 	PROVIDER = trustm_provider.so
 endif
 
-DEBUG = -g
-CFLAGS += -c
-
-CFLAGS += $(DEBUG)
+# skip linking
+CFLAGS += -c 
 CFLAGS += $(INCDIR)
 CFLAGS += -Wall
 CFLAGS += -Wno-format
