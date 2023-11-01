@@ -26,7 +26,8 @@
 
 TRUSTM = trustm_lib
 
-BUILD_FOR_RPI = YES
+BUILD_FOR_RPI = NO
+BUILD_FOR_MCOMETM = NO
 BUILD_FOR_ULTRA96 = NO
 USE_LIBGPIOD_RPI = NO
 
@@ -99,6 +100,9 @@ ifdef LIBDIR
         	endif
 	        ifeq ($(BUILD_FOR_ULTRA96), YES)
                 	LIBSRC += $(PALDIR)/target/ultra96/pal_ifx_i2c_config.c
+        	endif
+		else ifeq ($(BUILD_FOR_MCOMETM), YES)
+			LIBSRC += $(PALDIR)/target/mcometm/pal_ifx_i2c_config.c
         	endif
 	endif
 
