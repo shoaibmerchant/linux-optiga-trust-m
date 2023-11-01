@@ -80,6 +80,9 @@ ifdef LIBDIR
 	        ifeq ($(BUILD_FOR_ULTRA96), YES)
 	                 LIBSRC += $(PALDIR)/pal_gpio.c
         	endif
+		ifeq ($(BUILD_FOR_MCOMETM), YES)
+	                 LIBSRC += $(PALDIR)/pal_gpio.c
+        	endif
 	        ifeq ($(USE_LIBGPIOD_RPI), YES)
 	                 LIBSRC += $(PALDIR)/pal_gpio_gpiod.c
         	endif
