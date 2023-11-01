@@ -165,9 +165,9 @@ install:
 	@mkdir -p ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
 	@cp $(BINDIR)/$(PROVIDER) ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
 
-	@echo "Copying trustm binaries from $(BINDIR) to ${DESTDIR}${PREFIX}/usr/bin"
+	@echo "Copying trustm binaries from $(BINDIR)/apps to ${DESTDIR}${PREFIX}/usr/bin"
 	@mkdir -p ${DESTDIR}${PREFIX}/usr/bin
-	@cp $(BINDIR)/!(*.so) ${DESTDIR}${PREFIX}/usr/bin
+	@cp $(BINDIR)/apps/* ${DESTDIR}${PREFIX}/usr/bin
 
 clean :
 	@echo "Removing *.o from $(LIBDIR)" 
@@ -192,9 +192,9 @@ $(BINDIR)/$(PROVIDER): %: $(PROVOBJ) $(INCSRC) $(BINDIR)/$(LIB)
 	
 $(APPS): %: $(OTHOBJ) $(INCSRC) $(BINDIR)/$(LIB) %.o
 			@echo "******* Linking $@ "
-			@mkdir -p bin
+			@mkdir -p bin/apps
 			@$(CC) $@.o $(LDFLAGS_1) $(LDFLAGS) $(OTHOBJ) -o $@
-			@mv $@ bin
+			@mv $@ bin/apps
 
 $(BINDIR)/$(LIB): %: $(LIBOBJ) $(INCSRC)
 	@echo "******* Linking $@ "
