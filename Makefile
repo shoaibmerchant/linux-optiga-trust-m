@@ -157,17 +157,13 @@ all : $(BINDIR)/$(LIB) $(APPS) $(BINDIR)/$(PROVIDER)
 
 
 install:
-	@echo "Copying trustm_lib from $(BINDIR)/$(LIB) to ${DESTDIR}${PREFIX}/lib"
-	@mkdir -p ${DESTDIR}${PREFIX}/lib
-	@cp $(BINDIR)/$(LIB) ${DESTDIR}${PREFIX}/lib
+	@echo "Copying trustm_lib from $(BINDIR)/$(LIB) to ${DESTDIR}${PREFIX}/usr/lib"
+	@mkdir -p ${DESTDIR}${PREFIX}/usr/lib
+	@cp $(BINDIR)/$(LIB) ${DESTDIR}${PREFIX}/usr/lib
 
-	@echo "Copying openssl provider from $(BINDIR)/$(PROVIDER) to ${DESTDIR}${PREFIX}/lib/ossl-modules"
-	@mkdir -p ${DESTDIR}${PREFIX}/lib/ossl-modules
-	@cp $(BINDIR)/$(PROVIDER) ${DESTDIR}${PREFIX}/lib/ossl-modules
-
-	@echo "Copying all trustm binaries from $(BINDIR)/apps to ${DESTDIR}${PREFIX}/bin"
-	@mkdir -p ${DESTDIR}${PREFIX}/bin
-	@cp $(BINDIR)/apps/* ${DESTDIR}${PREFIX}/bin
+	@echo "Copying openssl provider from $(BINDIR)/$(PROVIDER) to ${DESTDIR}${PREFIX}/usr/lib/ossl-modules"
+	@mkdir -p ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
+	@cp $(BINDIR)/$(PROVIDER) ${DESTDIR}${PREFIX}/usr/lib/ossl-modules
 
 clean :
 	@echo "Removing *.o from $(LIBDIR)" 
@@ -192,9 +188,9 @@ $(BINDIR)/$(PROVIDER): %: $(PROVOBJ) $(INCSRC) $(BINDIR)/$(LIB)
 	
 $(APPS): %: $(OTHOBJ) $(INCSRC) $(BINDIR)/$(LIB) %.o
 			@echo "******* Linking $@ "
-			@mkdir -p bin/apps
+			@mkdir -p bin
 			@$(CC) $@.o $(LDFLAGS_1) $(LDFLAGS) $(OTHOBJ) -o $@
-			@mv $@ bin/apps
+			@mv $@ bin
 
 $(BINDIR)/$(LIB): %: $(LIBOBJ) $(INCSRC)
 	@echo "******* Linking $@ "
