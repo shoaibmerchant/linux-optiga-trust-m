@@ -39,8 +39,9 @@ LIBDIR += $(TRUSTM)/optiga/cmd
 LIBDIR += $(TRUSTM)/externals/mbedtls
 LIBDIR += trustm_helper
 
-#OTHDIR = $(TRUSTM)/examples/optiga
-ARCH := $(shell dpkg --print-architecture)
+# OTHDIR = $(TRUSTM)/examples/optiga
+# ARCH := $(shell dpkg --print-architecture)
+
 BINDIR = bin
 APPDIR = ex_cli_applications
 PROVDIR = trustm_provider
@@ -123,22 +124,18 @@ ifdef PROVDIR
 	PROVIDER = trustm_provider.so
 endif
 
-CC = gcc
 DEBUG = -g
-
 CFLAGS += -c
-ifeq ($(ARCH), arm64)
-CFLAGS += -fPIC
-endif
-#CFLAGS += $(DEBUG)
+
+CFLAGS += $(DEBUG)
 CFLAGS += $(INCDIR)
 CFLAGS += -Wall
 CFLAGS += -Wno-format
+CFLAGS += -Wno-format-security
+
 ifeq ($(USE_LIBGPIOD_RPI), YES)
 	  CFLAGS += -DHAS_LIBGPIOD
 endif
-#CFLAGS += -DENGINE_DYNAMIC_SUPPORT
-#CFLAGS += -DMODULE_ENABLE_DTLS_MUTUAL_AUTH
 
 LDFLAGS += -lpthread
 LDFLAGS += -lssl
@@ -153,25 +150,26 @@ LDFLAGS_1 = -L$(BINDIR) -Wl,-R$(BINDIR)
 LDFLAGS_1 += -ltrustm
 
 LDFLAGS_2 = -L/usr/local/ssl/lib
-LDFLAGS_2 += -lssl
+LDFLAGS_2 = -lssl
 LDFLAGS_2 += -lcrypto
 
-.Phony : install uninstall all clean
+.Phony : install all clean
 
 all : $(BINDIR)/$(LIB) $(APPS) $(BINDIR)/$(PROVIDER)
 
 
 install:
-	@echo "Create symbolic link to the openssl provider $(PROVIDER_INSTALL_DIR)/$(PROVIDER)"
-	@ln -s $(realpath $(BINDIR)/$(PROVIDER)) $(PROVIDER_INSTALL_DIR)/$(PROVIDER)
-	@echo "Create symbolic link to trustm_lib $(LIB_INSTALL_DIR)/$(LIB)"
-	@ln -s $(realpath $(BINDIR)/$(LIB)) $(LIB_INSTALL_DIR)/$(LIB)
-	
-uninstall: clean
-	@echo "Removing openssl symbolic link from $(PROVIDER_INSTALL_DIR)"	
-	@rm -rf $(PROVIDER_INSTALL_DIR)/$(PROVIDER)
-	@echo "Removing trustm_lib $(LIB_INSTALL_DIR)/$(LIB)"
-	@rm -rf $(LIB_INSTALL_DIR)/$(LIB)
+	@echo "Copying trustm_lib from $(BINDIR)/$(LIB) to ${DESTDIR}${PREFIX}/lib"
+	@mkdir -p ${DESTDIR}${PREFIX}/lib
+	@cp $(BINDIR)/$(LIB) ${DESTDIR}${PREFIX}/lib
+
+	@echo "Copying openssl provider from $(BINDIR)/$(PROVIDER) to ${DESTDIR}${PREFIX}/lib/ossl-modules"
+	@mkdir -p ${DESTDIR}${PREFIX}/lib/ossl-modules
+	@cp $(BINDIR)/$(PROVIDER) ${DESTDIR}${PREFIX}/lib/ossl-modules
+
+	@echo "Copying all trustm binaries from $(BINDIR)/apps to ${DESTDIR}${PREFIX}/bin"
+	@mkdir -p ${DESTDIR}${PREFIX}/bin
+	@cp $(BINDIR)/apps/* ${DESTDIR}${PREFIX}/bin
 
 clean :
 	@echo "Removing *.o from $(LIBDIR)" 
@@ -196,9 +194,9 @@ $(BINDIR)/$(PROVIDER): %: $(PROVOBJ) $(INCSRC) $(BINDIR)/$(LIB)
 	
 $(APPS): %: $(OTHOBJ) $(INCSRC) $(BINDIR)/$(LIB) %.o
 			@echo "******* Linking $@ "
-			@mkdir -p bin
+			@mkdir -p bin/apps
 			@$(CC) $@.o $(LDFLAGS_1) $(LDFLAGS) $(OTHOBJ) -o $@
-			@mv $@ bin/.	
+			@mv $@ bin/apps
 
 $(BINDIR)/$(LIB): %: $(LIBOBJ) $(INCSRC)
 	@echo "******* Linking $@ "
@@ -208,4 +206,3 @@ $(BINDIR)/$(LIB): %: $(LIBOBJ) $(INCSRC)
 $(LIBOBJ): %.o: %.c $(INCSRC)
 	@echo "+++++++ Generating lib object: $< "
 	@$(CC) $(CFLAGS) $< -o $@
-
