@@ -23,10 +23,9 @@
 #
 #*/
 
-
 TRUSTM = trustm_lib
 
-BUILD_FOR_RPI = NO
+BUILD_FOR_RPI = YES
 BUILD_FOR_MCOMETM = NO
 BUILD_FOR_ULTRA96 = NO
 USE_LIBGPIOD_RPI = NO
@@ -138,6 +137,7 @@ CFLAGS += $(INCDIR)
 CFLAGS += -Wall
 CFLAGS += -Wno-format
 CFLAGS += -Wno-format-security
+CFLAGS += -fPIC
 
 ifeq ($(USE_LIBGPIOD_RPI), YES)
 	  CFLAGS += -DHAS_LIBGPIOD
@@ -159,7 +159,7 @@ LDFLAGS_2 = -L/usr/local/ssl/lib
 LDFLAGS_2 = -lssl
 LDFLAGS_2 += -lcrypto
 
-.Phony : install all clean
+.Phony : install uninstall all clean
 
 all : $(BINDIR)/$(LIB) $(APPS) $(BINDIR)/$(PROVIDER)
 
@@ -176,6 +176,16 @@ install:
 	@echo "Copying trustm binaries from $(BINDIR)/apps to ${DESTDIR}${PREFIX}/usr/bin"
 	@mkdir -p ${DESTDIR}${PREFIX}/usr/bin
 	@cp $(BINDIR)/apps/* ${DESTDIR}${PREFIX}/usr/bin
+
+uninstall: clean
+	@echo "Removing openssl symbolic link from ${DESTDIR}${PREFIX}/usr/lib/ossl-modules"	
+	@rm -rf ${DESTDIR}${PREFIX}/usr/lib/ossl-modules/$(PROVIDER)
+
+	@echo "Removing trustm_lib ${DESTDIR}${PREFIX}/usr/lib"
+	@rm -rf ${DESTDIR}${PREFIX}/usr/lib/$(LIB)
+
+	@echo "Removing trustm binaries from ${DESTDIR}${PREFIX}/usr/bin"
+	@rm -rf ${DESTDIR}${PREFIX}/usr/bin/trustm*
 
 clean :
 	@echo "Removing *.o from $(LIBDIR)" 
