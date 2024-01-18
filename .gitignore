@@ -6,3 +6,5 @@ bin/
 
 # Shared objects (inc. Windows DLLs)
 *.so
+
+libtrustm-rs/target
