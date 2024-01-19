@@ -22,6 +22,8 @@ pub fn get_trustm_chipinfo() {
         println!("error reading trustm  UID");
     }
 
+    println!("trustm read status {:?}", return_status);
+
     let UID: _tag_utrustm_UID = unsafe { *m_UID };
 
     println!("Chip Identifier is {:?}", unsafe { UID.st});
