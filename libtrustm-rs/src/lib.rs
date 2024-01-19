@@ -13,6 +13,8 @@ pub fn get_trustm_chipinfo() {
         println!("error opening trustm i2c interface");
     }
 
+    println!("trustm open status {:?}", return_status);
+
     let m_UID = ptr::null_mut();
     let return_status: u32 = unsafe { trustm_readUID(m_UID) }.into();
 

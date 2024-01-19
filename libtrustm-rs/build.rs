@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 fn main() {
     // Tell cargo to look for shared libraries in the specified directory
-    println!("cargo:rustc-link-search=../bin");
+    println!("cargo:rustc-link-search=/home/mecha-3/mickledore-org/build-1/tmp/work/armv8a-poky-linux/libtrustm-rs/git-r0/recipe-sysroot/usr/lib/");
 
     // Tell cargo to tell rustc to link the system bzip2
     // shared library.
@@ -21,6 +21,13 @@ fn main() {
         .header("wrapper.h")
         .clang_arg("-I../trustm_helper/include")
         .clang_arg("-I../trustm_lib")
+        .clang_arg("-I../trustm_lib/optiga/include/optiga/ifx_i2c/")
+        .clang_arg("-I../trustm_lib/optiga/include/optiga/")
+        .clang_arg("-I../trustm_lib/optiga/include/optiga/pal/")
+        .clang_arg("-I../trustm_lib/optiga/include/")
+        .clang_arg("-I../trustm_lib/optiga/include/optiga/common/")
+        .clang_arg("-I../trustm_lib/optiga/include/optiga/comms/")
+        .clang_arg("-I/home/mecha-3/mickledore-org/build-1/tmp/work/armv8a-poky-linux/libtrustm-rs/git-r0/recipe-sysroot/usr/include")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
